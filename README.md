@@ -54,3 +54,6 @@ If you want to learn more about building native executables, please consult http
 Easily start your Reactive RESTful Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+
+#### Testdata
+The testdata is definded loaded and found under (/workspaces/coworkingspace/src/main/java/ch/zli/m223/service/TestDataService.java)
