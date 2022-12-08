@@ -1,6 +1,7 @@
 package ch.zli.m223.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -49,6 +50,11 @@ public class ApplicationUserService {
         entityManager.remove(entity);
     }
 
-    
-
+    public Optional<ApplicationUser> findByEmail(String email) {
+        return entityManager
+                .createNamedQuery("ApplicationUser.findByEmail", ApplicationUser.class)
+                .setParameter("email", email)
+                .getResultStream()
+                .findFirst();
+    }
 }
