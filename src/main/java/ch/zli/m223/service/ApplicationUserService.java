@@ -6,13 +6,16 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
 
 import com.oracle.svm.core.annotate.Inject;
 
 import ch.zli.m223.model.ApplicationUser;
+import ch.zli.m223.model.Credential;
 
 @ApplicationScoped
 public class ApplicationUserService {
+
     @Inject
     EntityManager entityManager;
 

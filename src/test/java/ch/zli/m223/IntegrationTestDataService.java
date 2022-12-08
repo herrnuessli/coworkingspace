@@ -1,29 +1,44 @@
-package ch.zli.m223.service;
-
+package ch.zli.m223;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import ch.zli.m223.model.ApplicationUser;
 import ch.zli.m223.model.Booking;
 import ch.zli.m223.model.TimePeriod;
-
-import javax.inject.Inject;
-
 import io.quarkus.arc.profile.IfBuildProfile;
 import io.quarkus.runtime.StartupEvent;
 
-@IfBuildProfile("dev")
+@IfBuildProfile("test")
 @ApplicationScoped
-public class TestDataService {
+public class IntegrationTestDataService {
     @Inject
     EntityManager entityManager;
 
+    void onStartup(@Observes StartupEvent event) {
+        generateTestData();
+    }
+
     @Transactional
-    void generateTestData(@Observes StartupEvent event){
+    void reloadDatabase() {
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE entry_tags RESTART IDENTITY").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE applicationuser RESTART IDENTITY").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE category RESTART IDENTITY").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE entry RESTART IDENTITY").executeUpdate();
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+        generateTestData();
+    }
+
+    @Transactional
+    void generateTestData(){
         //applicationUsers
         var user1ApplicationUser = new ApplicationUser();
         user1ApplicationUser.setFirstname("Raph");
@@ -68,4 +83,5 @@ public class TestDataService {
         thirdBooking.setApplicationUser(user2ApplicationUser);
         entityManager.persist(thirdBooking);
     }
+
 }

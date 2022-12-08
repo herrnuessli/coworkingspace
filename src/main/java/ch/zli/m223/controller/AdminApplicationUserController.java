@@ -21,12 +21,22 @@ import com.oracle.svm.core.annotate.Inject;
 import ch.zli.m223.model.ApplicationUser;
 import ch.zli.m223.service.ApplicationUserService;
 
-@Path("/applicationUsers")
+@Path("/adminApplicationUsers")
 @Tag(name = "ApplicationUsers", description = "handeling of applicationUsers")
-@RolesAllowed({"User"})
-public class ApplicationUserController {
+@RolesAllowed({"Admin"})
+public class AdminApplicationUserController {
     @Inject
     ApplicationUserService applicationUserService;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(
+        summary = "index all applicationUsers.",
+        description = "returns a list of all applicationUsers"
+    )
+    public List<ApplicationUser> index() {
+        return applicationUserService.findAll();
+    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -38,6 +48,27 @@ public class ApplicationUserController {
     public ApplicationUser create(@Valid ApplicationUser applicationUser) {
         return applicationUserService.createApplicationUser(applicationUser);
     }
+
+    @Path("/applicationUser/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(
+        summary = "Gets Applicationuser",
+        description = "returns a Applicationuser"
+    )
+    public ApplicationUser readApplicationUser(@PathParam("id") Long id) {
+        return applicationUserService.readApplicationUser(id);
+    }
+
+    @Path("/{id}")
+    @PUT
+    @Operation(
+        summary = "updates an applicationUser",
+        description = "updates an applicationUser by its id"
+    )
+    public ApplicationUser update(@PathParam("id") Long id, @Valid ApplicationUser applicationUser) {
+        return applicationUserService.updateApplicationUser(id, applicationUser);
+    }
  
     @Path("/password/{id}")
     @PUT
@@ -47,5 +78,15 @@ public class ApplicationUserController {
     )
     public ApplicationUser updatePassword(@PathParam("id") Long id, @Valid String newPassword) {
         return applicationUserService.updatePassword(id, newPassword);
+    }
+
+    @Path("/{id}")
+    @DELETE 
+    @Operation(
+        summary = "Deletes an applicationUser",
+        description = "Deletes an applicationUser by its id."
+    )
+    public void delete(@PathParam("id") long id) {
+        applicationUserService.deleteApplicationUser(id);
     }
 }
